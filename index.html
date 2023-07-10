@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bitcoin  Price Droper </title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#convertBtn').click(function() {
+        var btcPriceGHS = parseFloat($('#btcPriceGHS').val());
+        var percentage = parseFloat($('#percentage').val());
+
+        $.ajax({
+          url: 'https://api.coinbase.com/v2/exchange-rates?currency=USDT',
+          method: 'GET',
+          success: function(response) {
+            var exchangeRate = parseFloat(response.data.rates.GHS);
+            var btcPriceUSDT = btcPriceGHS / exchangeRate;
+            var convertedPriceUSDT = btcPriceUSDT * (1 + percentage / 100);
+
+            $('#btcPriceGHSResult').text(btcPriceGHS);
+            $('#exchangeRate').text('1 GHS = ' + exchangeRate + ' USDT');
+            $('#btcPriceUSDT').text(btcPriceUSDT);
+            $('#convertedPriceUSDT').text(convertedPriceUSDT);
+          },
+          error: function() {
+            console.log('Error retrieving exchange rate.');
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Bitcoin Price Converter</h1>
+
+  <div>
+    <label for="btcPriceGHS">BTC Price in GHS:</label>
+    <input type="number" id="btcPriceGHS" step="0.01">
+  </div>
+
+  <div>
+    <label for="percentage">Percentage (positive for increase, negative for decrease):</label>
+    <input type="number" id="percentage" step="0.01">
+  </div>
+
+  <div>
+    <button id="convertBtn">Convert</button>
+  </div>
+
+  <h2>Results:</h2>
+
+  <div id="results">
+    <p>BTC price in GHS: <span id="btcPriceGHSResult"></span></p>
+    <p id="exchangeRate"></p>
+    <p>BTC price in USDT: <span id="btcPriceUSDT"></span></p>
+    <p>Percentage Increased or Decreased price USDT: <br/> <span id="convertedPriceUSDT"></span></p>
+  </div>
+</body>
+</html>
